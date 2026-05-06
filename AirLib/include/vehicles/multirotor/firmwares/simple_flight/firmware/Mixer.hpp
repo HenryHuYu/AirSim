@@ -18,28 +18,32 @@ public:
 
     void getMotorOutput(const Axis4r& controls, std::vector<float>& motor_outputs) const
     {
-        if (controls.throttle() < params_->motor.min_angling_throttle) {
-            motor_outputs.assign(params_->motor.motor_count, controls.throttle());
+        const float throttle = std::max(params_->motor.min_motor_output,
+                                        std::min(controls.throttle(), params_->motor.max_motor_output));
+
+        if (throttle < params_->motor.min_angling_throttle) {
+            motor_outputs.assign(params_->motor.motor_count, throttle);
             return;
         }
 
+        float attitude_mix[kMotorCount];
+        float attitude_scale = 1.0f;
+        for (int motor_index = 0; motor_index < kMotorCount; ++motor_index) {
+            attitude_mix[motor_index] =
+                controls.pitch() * mixerQuadX[motor_index].pitch + controls.roll() * mixerQuadX[motor_index].roll + controls.yaw() * mixerQuadX[motor_index].yaw;
+
+            if (attitude_mix[motor_index] < 0) {
+                attitude_scale = std::min(attitude_scale, (throttle - params_->motor.min_motor_output) / -attitude_mix[motor_index]);
+            }
+            else if (attitude_mix[motor_index] > 0) {
+                attitude_scale = std::min(attitude_scale, (params_->motor.max_motor_output - throttle) / attitude_mix[motor_index]);
+            }
+        }
+        attitude_scale = std::max(0.0f, std::min(attitude_scale, 1.0f));
+
         for (int motor_index = 0; motor_index < kMotorCount; ++motor_index) {
             motor_outputs[motor_index] =
-                controls.throttle() * mixerQuadX[motor_index].throttle + controls.pitch() * mixerQuadX[motor_index].pitch + controls.roll() * mixerQuadX[motor_index].roll + controls.yaw() * mixerQuadX[motor_index].yaw;
-        }
-
-        float min_motor = *std::min_element(motor_outputs.begin(), motor_outputs.begin() + kMotorCount);
-        if (min_motor < params_->motor.min_motor_output) {
-            float undershoot = params_->motor.min_motor_output - min_motor;
-            for (int motor_index = 0; motor_index < kMotorCount; ++motor_index)
-                motor_outputs[motor_index] += undershoot;
-        }
-
-        float max_motor = *std::max_element(motor_outputs.begin(), motor_outputs.begin() + kMotorCount);
-        float scale = max_motor / params_->motor.max_motor_output;
-        if (scale > params_->motor.max_motor_output) {
-            for (int motor_index = 0; motor_index < kMotorCount; ++motor_index)
-                motor_outputs[motor_index] /= scale;
+                throttle * mixerQuadX[motor_index].throttle + attitude_mix[motor_index] * attitude_scale;
         }
 
         for (int motor_index = 0; motor_index < kMotorCount; ++motor_index)
@@ -48,7 +52,7 @@ public:
     }
 
 private:
-    const int kMotorCount = 4;
+    static constexpr int kMotorCount = 4;
 
     const Params* params_;
 

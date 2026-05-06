@@ -52,10 +52,9 @@ namespace airlib
                 params.body_box.y() = vehicle_setting_->box_y;
                 params.body_box.z() = vehicle_setting_->box_z;
 
-                
-
                 params.rotor_params.max_thrust = vehicle_setting_->max_thrust;
                 params.rotor_params.max_torque = vehicle_setting_->max_torque;
+                params.rotor_params.calculateMaxSpeed();
 
                 setupFrameQuadFromSettings(params);
             }
