@@ -312,6 +312,8 @@ void PawnSimApi::resetImplementation()
     state_ = initial_state_;
     rc_data_ = msr::airlib::RCData();
     params_.pawn->SetActorLocationAndRotation(state_.start_location, state_.start_rotation, false, nullptr, ETeleportType::TeleportPhysics);
+    for (auto& camera_pair : cameras_.getMap())
+        camera_pair.second->resetCameraPose();
     kinematics_->reset();
     environment_->reset();
 }

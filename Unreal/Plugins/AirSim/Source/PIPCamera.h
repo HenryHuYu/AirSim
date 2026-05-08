@@ -69,6 +69,7 @@ public:
 
     void setupCameraFromSettings(const CameraSetting& camera_setting, const NedTransform& ned_transform);
     void setCameraPose(const msr::airlib::Pose& relative_pose);
+    void resetCameraPose();
     void setCameraFoV(float fov_degrees);
     msr::airlib::CameraInfo getCameraInfo() const;
     std::vector<float> getDistortionParams() const;
@@ -111,7 +112,10 @@ private: //members
 
     std::vector<bool> camera_type_enabled_;
     FRotator gimbald_rotator_;
+    FRotator initial_gimbald_rotator_;
+    FTransform initial_relative_transform_;
     float gimbal_stabilization_;
+    bool has_initial_camera_pose_ = false;
     const NedTransform* ned_transform_;
     TMap<int, EPixelFormat> image_type_to_pixel_format_map_;
 
@@ -134,5 +138,6 @@ private: //methods
     static void updateCameraSetting(UCineCameraComponent* camera, const CaptureSetting& setting, const NedTransform& ned_transform);
     void copyCameraSettingsToAllSceneCapture(UCameraComponent* camera);
     void copyCameraSettingsToSceneCapture(UCameraComponent* src, USceneCaptureComponent2D* dst);
+    void applyGimbalStabilization();
     //end CinemAirSim
 };

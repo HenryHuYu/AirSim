@@ -1,6 +1,7 @@
 #include "PIPCamera.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/SceneCaptureComponent2D.h"
+#include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "Engine/World.h"
@@ -204,6 +205,12 @@ msr::airlib::ProjectionMatrix APIPCamera::getProjectionMatrix(const APIPCamera::
 
 void APIPCamera::Tick(float DeltaTime)
 {
+    unused(DeltaTime);
+    applyGimbalStabilization();
+}
+
+void APIPCamera::applyGimbalStabilization()
+{
     if (gimbal_stabilization_ > 0) {
         FRotator rotator = this->GetActorRotation();
         if (!std::isnan(gimbald_rotator_.Pitch))
@@ -316,6 +323,17 @@ void APIPCamera::setCameraPose(const msr::airlib::Pose& relative_pose)
     }
 }
 
+void APIPCamera::resetCameraPose()
+{
+    if (!has_initial_camera_pose_)
+        return;
+
+    if (USceneComponent* root_component = GetRootComponent())
+        root_component->SetRelativeTransform(initial_relative_transform_, false, nullptr, ETeleportType::TeleportPhysics);
+    gimbald_rotator_ = initial_gimbald_rotator_;
+    applyGimbalStabilization();
+}
+
 void APIPCamera::setCameraFoV(float fov_degrees)
 {
     int image_count = static_cast<int>(Utils::toNumeric(ImageType::Count));
@@ -415,6 +433,11 @@ void APIPCamera::setupCameraFromSettings(const APIPCamera::CameraSetting& camera
             copyCameraSettingsToAllSceneCapture(camera_); //CinemAirSim
         }
     }
+
+    if (USceneComponent* root_component = GetRootComponent())
+        initial_relative_transform_ = root_component->GetRelativeTransform();
+    initial_gimbald_rotator_ = gimbald_rotator_;
+    has_initial_camera_pose_ = true;
 }
 
 void APIPCamera::updateCaptureComponentSetting(USceneCaptureComponent2D* capture, UTextureRenderTarget2D* render_target,
