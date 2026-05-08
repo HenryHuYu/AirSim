@@ -39,7 +39,7 @@ namespace airlib
         real_T air_density = 1.225f; //  kg/m^3
         real_T max_rpm = 42000.0f; // revolutions per minute
         real_T propeller_diameter = 0.0762f; //diameter in meters, default is for DJI Phantom 2
-        real_T propeller_height = 0.008f; //height of cylindrical area when propeller rotates, 1 cm
+        real_T propeller_height = 0.01f; //height of cylindrical area when propeller rotates, 1 cm
         real_T control_signal_filter_tc = 0.005f; //time constant for low pass filter
 
         real_T revolutions_per_second;

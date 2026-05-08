@@ -224,7 +224,7 @@ private:
     /// ROS subscriber callbacks
     void vel_cmd_world_frame_cb(const airsim_ros_pkgs::VelCmd::ConstPtr& msg, const std::string& vehicle_name);
     void vel_cmd_body_frame_cb(const airsim_ros_pkgs::VelCmd::ConstPtr& msg, const std::string& vehicle_name);
-
+    void angle_rate_throttle_frame_cb(const airsim_ros_pkgs::AngleRateThrottle::ConstPtr& msg, const std::string& vehicle_name);
     void vel_cmd_group_body_frame_cb(const airsim_ros_pkgs::VelCmdGroup& msg);
     void vel_cmd_group_world_frame_cb(const airsim_ros_pkgs::VelCmdGroup& msg);
 

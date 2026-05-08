@@ -366,6 +366,7 @@ namespace airlib
 
                 /************************* Update accelerations due to force and torque ************************/
                 //get new acceleration due to force - we'll use this acceleration in next time step
+
                 next.accelerations.linear = (next_wrench.force / body.getMass()) + body.getEnvironment().getState().gravity;
             }
 

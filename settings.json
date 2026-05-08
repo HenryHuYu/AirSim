@@ -3,6 +3,9 @@
   "SettingsVersion": 1.2,
   "SimMode": "Multirotor",
   "ViewMode": "FlyWithMe",
+  "PawnPaths": {
+    "DefaultQuadrotor": {"PawnBP": "Class'/Game/drone/BP_FlyingPawn.BP_FlyingPawn_C'"}
+  },
   "ClockSpeed": 0.2,
   "RpcEnabled": true,
   "CameraDefaults": {

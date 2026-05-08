@@ -45,6 +45,7 @@ DerivedDataCache/
 UnrealHeaderTool/
 UnrealPak/
 obj/
+linux_lib/
 .vs/
 .vscode/
 .visuallint/

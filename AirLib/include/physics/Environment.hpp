@@ -113,9 +113,9 @@ namespace airlib
             geodetic_converter_.ned2Geodetic(state.position, state.geo_point);
 
             real_T geo_pot = EarthUtils::getGeopotential(state.geo_point.altitude / 1000.0f);
-            state.temperature = EarthUtils::getStandardTemperature(geo_pot);
-            state.air_pressure = EarthUtils::getStandardPressure(geo_pot, state.temperature);
-            state.air_density = EarthUtils::getAirDensity(state.air_pressure, state.temperature);
+            state.temperature = EarthUtils::getStandardTemperature(geo_pot); //288.15
+            state.air_pressure = EarthUtils::getStandardPressure(geo_pot, state.temperature); // 101325
+            state.air_density = EarthUtils::getAirDensity(state.air_pressure, state.temperature) ; // std_pressure / 287.053f / std_temperature =1.22
 
             //TODO: avoid recalculating square roots
             state.gravity = Vector3r(0, 0, EarthUtils::getGravity(state.geo_point.altitude));

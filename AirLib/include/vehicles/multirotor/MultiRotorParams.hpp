@@ -377,11 +377,11 @@ namespace airlib
             params.rotor_count = 4;
             std::vector<real_T> arm_lengths(params.rotor_count, params.arm_length);
 
-            real_T motor_assembly_weight = 0.018f;
+            real_T motor_assembly_weight = 0.03f;
             real_T box_mass = params.mass - params.rotor_count * motor_assembly_weight;
 
             //set up dimensions of core body box or abdomen (not including arms).
-            real_T rotor_z = 1.0f / 100;
+            real_T rotor_z = 0.5f / 100;
 
             //computer rotor poses
             initializeRotorQuadX(params.rotor_poses, params.rotor_count, arm_lengths.data(), rotor_z);
